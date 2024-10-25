@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import CreateReviewForm from "@/components/Review/CreateReviewForm.vue";
 import ReviewComponent from "@/components/Review/ReviewComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
@@ -31,7 +30,6 @@ function updateEditing(id: string) {
   editing.value = id;
 }
 
-// TODO: figure out what this does
 onBeforeMount(async () => {
   await getReviews();
   loaded.value = true;
@@ -39,13 +37,14 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <section v-if="isLoggedIn">
-    <h2>Create a review:</h2>
+  <!-- <section v-if="isLoggedIn">
+    <button class="main-button">Create Review</button>
     <CreateReviewForm @refreshPosts="getReviews" />
-  </section>
+  </section> -->
+  <!-- <CreateReviewForm /> -->
   <section class="reviews" v-if="loaded && reviews.length !== 0">
     <article v-for="review in reviews" :key="review._id">
-      <ReviewComponent v-if="editing !== review._id" :review="review" @refreshPosts="getReviews" @editPost="updateEditing" />
+      <ReviewComponent v-if="editing !== review._id" :review="review" />
       <!-- TODO: edit review form -->
     </article>
   </section>

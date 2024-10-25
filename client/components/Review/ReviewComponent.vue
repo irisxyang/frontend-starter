@@ -1,12 +1,28 @@
 <script setup lang="ts">
+import { useRestaurantStore } from "@/stores/restaurant";
 import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
+import { onBeforeMount, ref } from "vue";
+import { RouterLink } from "vue-router";
 import { fetchy } from "../../utils/fetchy";
+
+const { updateCurrentRestaurant } = useRestaurantStore();
 
 const props = defineProps(["review"]);
 const emit = defineEmits(["editReview", "refreshReviews"]);
 const { currentUsername } = storeToRefs(useUserStore());
+const restaurantId = ref(props.review.restaurant);
+const reviewRestaurantName = ref("");
+const reviewRestaurantAddress = ref("");
+const reviewUsername = ref("");
+const loaded = ref(false);
+
+const foodScore = ref(0);
+const serviceScore = ref(0);
+const ambienceScore = ref(0);
+const priceScore = ref(0);
+const noveltyScore = ref(0);
 
 const deleteReview = async () => {
   try {
@@ -16,24 +32,156 @@ const deleteReview = async () => {
   }
   emit("refreshReviews");
 };
+
+const getReviewerName = async (reviewer: string) => {
+  let query: Record<string, string> = { id: reviewer };
+  let user;
+  try {
+    user = await fetchy(`/api/users`, "GET", { query });
+  } catch (_) {
+    return "User Not Found";
+  }
+  reviewUsername.value = user.username;
+};
+
+const getRestaurantInfo = async (res: string) => {
+  let query: Record<string, string> = { id: res };
+  let restaurant;
+  try {
+    restaurant = await fetchy("/api/restaurants", "GET", { query });
+  } catch (_) {
+    return "Restaurant Not Found";
+  }
+  reviewRestaurantName.value = restaurant.name;
+  reviewRestaurantAddress.value = restaurant.address;
+};
+
+const getPreferences = async () => {
+  let query: Record<string, string> = { review: props.review._id };
+  let preference;
+  try {
+    preference = await fetchy("/api/review/preference", "GET", { query });
+  } catch (_) {
+    return;
+  }
+  foodScore.value = parseInt(preference.food);
+  serviceScore.value = Number(preference.service);
+  ambienceScore.value = Number(preference.ambience);
+  priceScore.value = Number(preference.price);
+  noveltyScore.value = Number(preference.novelty);
+  console.log("foodScore", foodScore.value);
+  console.log("serviceScore", serviceScore.value);
+};
+
+async function updateRestaurant(res: string) {
+  await updateCurrentRestaurant(res);
+}
+
+onBeforeMount(async () => {
+  await getRestaurantInfo(props.review.restaurant);
+  await getReviewerName(props.review.reviewer);
+  await getPreferences();
+  loaded.value = true;
+});
 </script>
 
 <template>
-  <p class="author">{{ props.review.author }}</p>
-  <p>{{ props.review.content }}</p>
-  <div class="base">
-    <menu v-if="props.review.author == currentUsername">
-      <li><button class="btn-small pure-button" @click="emit('editReview', props.review._id)">Edit</button></li>
-      <li><button class="button-error btn-small pure-button" @click="deleteReview">Delete</button></li>
+  <div class="review-full-container">
+    <span>
+      <div class="review-title">
+        <RouterLink :to="{ name: 'Restaurant' }" v-on:click="updateRestaurant(restaurantId)">
+          <p class="review-restaurant">{{ reviewRestaurantName }}</p>
+          <!-- <button v-on:click="updateRestaurant(restaurantId)" class="review-restaurant">{{ reviewRestaurantName }}</button> -->
+        </RouterLink>
+        <p class="review-reviewer">{{ reviewUsername }}</p>
+      </div>
+      <div class="review-title">
+        <p>{{ reviewRestaurantAddress }}</p>
+        <div class="base">
+          <article class="timestamp">
+            <p v-if="props.review.dateCreated !== props.review.dateUpdated">Edited on: {{ formatDate(props.review.dateUpdated) }}</p>
+            <p v-else>{{ formatDate(props.review.dateCreated) }}</p>
+          </article>
+        </div>
+      </div>
+    </span>
+    <span class="review-content">
+      <div class="review-content-container" style="margin-right: 0.5em">
+        <div>food: {{ foodScore }}</div>
+        <div>service: {{ serviceScore }}</div>
+        <div>ambience: {{ ambienceScore }}</div>
+        <div>price: {{ priceScore }}</div>
+        <div>novelty: {{ noveltyScore }}</div>
+      </div>
+      <div class="review-content-container" style="align-items: flex-end; margin-left: 0.5em">
+        <div class="content-subheading">Comments:</div>
+        <div>{{ props.review.comment }}</div>
+      </div>
+    </span>
+    <menu class="review-buttons" v-if="reviewUsername == currentUsername">
+      <li><button class="main-button" @click="emit('editReview', props.review._id)">Edit</button></li>
+      <li><button class="main-button" @click="deleteReview">Delete</button></li>
     </menu>
-    <article class="timestamp">
-      <p v-if="props.review.dateCreated !== props.review.dateUpdated">Edited on: {{ formatDate(props.review.dateUpdated) }}</p>
-      <p v-else>Created on: {{ formatDate(props.review.dateCreated) }}</p>
-    </article>
   </div>
 </template>
 
 <style scoped>
+.content-subheading {
+  font-size: 1.2em;
+}
+
+.review-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.review-content-container {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid black;
+  border-radius: 4px;
+  padding: 1em;
+  height: 8em;
+  width: 15em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.review-full-container {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid black;
+  border-radius: 4px;
+
+  padding: 2em;
+}
+
+.review-title {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  /* padding: 0.5em; */
+}
+
+.review-reviewer {
+  text-decoration: none;
+  font-size: 1.2em;
+}
+
+.review-restaurant {
+  text-decoration: none;
+  font-size: 1.5em;
+}
+
+.review-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
 p {
   margin: 0em;
 }

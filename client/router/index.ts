@@ -2,9 +2,13 @@ import { storeToRefs } from "pinia";
 import { createRouter, createWebHistory } from "vue-router";
 
 import { useUserStore } from "@/stores/user";
+import { useRestaurantStore } from "../stores/restaurant";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
+import ProfileView from "../views/ProfileView.vue";
+import RestaurantView from "../views/RestaurantView.vue";
+import SearchView from "../views/SearchView.vue";
 import SettingView from "../views/SettingView.vue";
 
 const router = createRouter({
@@ -32,6 +36,30 @@ const router = createRouter({
           return { name: "Settings" };
         }
       },
+    },
+    {
+      path: "/profile",
+      name: "Profile",
+      component: ProfileView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/restaurant",
+      name: "Restaurant",
+      component: RestaurantView,
+      meta: { requiresAuth: false },
+      beforeEnter: (to, from) => {
+        const { hasRestaurant } = storeToRefs(useRestaurantStore());
+        if (hasRestaurant.value) {
+          return;
+        }
+      },
+    },
+    {
+      path: "/search",
+      name: "Search",
+      component: SearchView,
+      meta: { requiresAuth: false },
     },
     {
       path: "/:catchAll(.*)",

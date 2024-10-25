@@ -22,41 +22,59 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <header>
-    <nav>
-      <div class="title">
-        <img src="@/assets/images/logo.svg" />
-        <RouterLink :to="{ name: 'Home' }">
-          <h1>Social Media App</h1>
-        </RouterLink>
-      </div>
-      <ul>
-        <li>
-          <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
-        </li>
-        <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Settings </RouterLink>
-        </li>
-        <li v-else>
-          <RouterLink :to="{ name: 'Login' }" :class="{ underline: currentRouteName == 'Login' }"> Login </RouterLink>
-        </li>
-      </ul>
-    </nav>
-    <article v-if="toast !== null" class="toast" :class="toast.style">
-      <p>{{ toast.message }}</p>
-    </article>
-  </header>
-  <RouterView />
+  <div class="bg">
+    <header>
+      <nav>
+        <div class="title">
+          <img src="@/assets/images/logo.svg" />
+          <RouterLink :to="{ name: 'Home' }">
+            <h1>Omnom</h1>
+          </RouterLink>
+        </div>
+        <ul>
+          <li>
+            <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
+          </li>
+          <li v-if="isLoggedIn">
+            <RouterLink :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Settings </RouterLink>
+          </li>
+          <li v-if="isLoggedIn">
+            <RouterLink :to="{ name: 'Profile' }" :class="{ underline: currentRouteName == 'Profile' }"> Profile </RouterLink>
+          </li>
+          <li v-else>
+            <RouterLink :to="{ name: 'Login' }" :class="{ underline: currentRouteName == 'Login' }"> Login </RouterLink>
+          </li>
+        </ul>
+      </nav>
+      <article v-if="toast !== null" class="toast" :class="toast.style">
+        <p>{{ toast.message }}</p>
+      </article>
+    </header>
+    <RouterView />
+    <footer>Created by Iris Yang | 2024</footer>
+  </div>
 </template>
 
 <style scoped>
 @import "./assets/toast.css";
 
+.bg {
+  background-color: var(--base-bg);
+}
+
 nav {
   padding: 1em 2em;
-  background-color: lightgray;
+  background-color: var(--main-accent);
   display: flex;
   align-items: center;
+}
+
+footer {
+  padding: 3em 4em;
+  background-color: var(--main-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 h1 {
