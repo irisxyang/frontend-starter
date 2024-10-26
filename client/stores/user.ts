@@ -52,6 +52,10 @@ export const useUserStore = defineStore(
       await fetchy("/api/users/password", "PATCH", { body: { currentPassword, newPassword } });
     };
 
+    const updateUserPreference = async (food: string, ambience: string, service: string, price: string, novelty: string) => {
+      await fetchy("/api/user/weightings", "PATCH", { body: { food, ambience, service, price, novelty } });
+    };
+
     const deleteUser = async () => {
       await fetchy("/api/users", "DELETE");
       resetStore();
@@ -67,6 +71,7 @@ export const useUserStore = defineStore(
       logoutUser,
       updateUserUsername,
       updateUserPassword,
+      updateUserPreference,
       deleteUser,
     };
   },
