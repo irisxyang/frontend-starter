@@ -7,6 +7,7 @@ export const useUserStore = defineStore(
   "user",
   () => {
     const currentUsername = ref("");
+    const userWeighting = ref({ food: "5", service: "5", ambience: "5", price: "5", novelty: "5" });
 
     const isLoggedIn = computed(() => currentUsername.value !== "");
 
@@ -30,8 +31,11 @@ export const useUserStore = defineStore(
       try {
         const { username } = await fetchy("/api/session", "GET", { alert: false });
         currentUsername.value = username;
+        const weighting = await fetchy("api/user/weightings", "GET");
+        userWeighting.value = weighting;
       } catch {
         currentUsername.value = "";
+        userWeighting.value = { food: "5", service: "5", ambience: "5", price: "5", novelty: "5" };
       }
     };
 
@@ -55,6 +59,7 @@ export const useUserStore = defineStore(
 
     return {
       currentUsername,
+      userWeighting,
       isLoggedIn,
       createUser,
       loginUser,

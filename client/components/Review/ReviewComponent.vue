@@ -24,6 +24,8 @@ const ambienceScore = ref(0);
 const priceScore = ref(0);
 const noveltyScore = ref(0);
 
+const weightedAverage = ref(0);
+
 const deleteReview = async () => {
   try {
     await fetchy(`/api/reviews/${props.review._id}`, "DELETE");
@@ -64,23 +66,47 @@ const getPreferences = async () => {
   } catch (_) {
     return;
   }
-  foodScore.value = parseInt(preference.food);
+  foodScore.value = Number(preference.food);
   serviceScore.value = Number(preference.service);
   ambienceScore.value = Number(preference.ambience);
   priceScore.value = Number(preference.price);
   noveltyScore.value = Number(preference.novelty);
-  console.log("foodScore", foodScore.value);
-  console.log("serviceScore", serviceScore.value);
 };
 
 async function updateRestaurant(res: string) {
   await updateCurrentRestaurant(res);
 }
 
+async function calculateAverage() {
+  //   // get current user
+  //   let userId;
+  //   try {
+  //     userId = (await fetchy(`/api/users/${currentUsername.value}`, "GET"))._id;
+  //   } catch (_) {
+  //     return;
+  //   }
+  let currentUserWeightings;
+  try {
+    currentUserWeightings = await fetchy(`/api/user/weightings`, "GET");
+  } catch (_) {
+    return;
+  }
+
+  const weightingSum = currentUserWeightings.food + currentUserWeightings.service + currentUserWeightings.ambience + currentUserWeightings.price + currentUserWeightings.novelty;
+  weightedAverage.value =
+    (1 / weightingSum) *
+    (currentUserWeightings.food * foodScore.value +
+      currentUserWeightings.service * serviceScore.value +
+      currentUserWeightings.ambience * ambienceScore.value +
+      currentUserWeightings.price * priceScore.value +
+      currentUserWeightings.novelty * noveltyScore.value);
+}
+
 onBeforeMount(async () => {
   await getRestaurantInfo(props.review.restaurant);
   await getReviewerName(props.review.reviewer);
   await getPreferences();
+  await calculateAverage();
   loaded.value = true;
 });
 </script>
@@ -107,6 +133,7 @@ onBeforeMount(async () => {
     </span>
     <span class="review-content">
       <div class="review-content-container" style="margin-right: 0.5em">
+        <div class="content-subheading">Weighted Average: {{ weightedAverage }}</div>
         <div>food: {{ foodScore }}</div>
         <div>service: {{ serviceScore }}</div>
         <div>ambience: {{ ambienceScore }}</div>
@@ -128,6 +155,7 @@ onBeforeMount(async () => {
 <style scoped>
 .content-subheading {
   font-size: 1.2em;
+  padding-bottom: 0.4em;
 }
 
 .review-content {

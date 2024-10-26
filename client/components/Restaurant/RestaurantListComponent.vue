@@ -30,8 +30,7 @@ onBeforeMount(async () => {
 
 <template>
   <SearchRestaurantForm @getRestaurantsByName="getRestaurants" />
-  <section v-if="loaded && restaurants.length !== 0" class="border">
-    <p>Restaurant List Component</p>
+  <section v-if="loaded && restaurants.length !== 0">
     <article v-for="restaurant in restaurants" :key="restaurant._id">
       <RestaurantComponent :restaurant="restaurant" />
     </article>

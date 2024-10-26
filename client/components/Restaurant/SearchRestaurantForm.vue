@@ -21,7 +21,7 @@ form {
   padding: 1em;
   align-items: center;
   justify-content: center;
-  width: 60%;
+  width: 50%;
 }
 
 fieldset {

@@ -2,20 +2,28 @@
 import ReviewListComponent from "@/components/Review/ReviewListComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
-import { computed } from "vue";
+import { computed, onBeforeMount } from "vue";
 import { RouterLink, useRoute } from "vue-router";
 
 import { useRestaurantStore } from "@/stores/restaurant";
 
-const { updateCurrentRestaurant } = useRestaurantStore();
+const { updateCurrentRestaurant, resetStore } = useRestaurantStore();
 
 const currentRoute = useRoute();
 const currentRouteName = computed(() => currentRoute.name);
-const restest = "6712d7b39b00bf42cf65bc3e";
 
 async function updateRestaurant(res: string) {
   await updateCurrentRestaurant(res);
 }
+
+// resets store to hold no restaurant
+async function resetRestaurant() {
+  await resetStore();
+}
+
+onBeforeMount(async () => {
+  await resetRestaurant();
+});
 
 const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 </script>
@@ -33,9 +41,6 @@ const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
     </p>
     <RouterLink :to="{ name: 'Search' }">
       <button class="main-button find-restaurant-button">Find a Restaurant</button>
-    </RouterLink>
-    <RouterLink :to="{ name: 'Restaurant' }">
-      <button v-on:click="updateRestaurant(restest)">go to restaurant</button>
     </RouterLink>
     <ReviewListComponent />
   </main>

@@ -8,7 +8,7 @@ const { currentRestaurant } = storeToRefs(useRestaurantStore());
 
 <template>
   <main>
-    <CreateReviewForm />
+    <CreateReviewForm :restaurantId="currentRestaurant" />
   </main>
 </template>
 

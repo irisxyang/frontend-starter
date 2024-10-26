@@ -31,6 +31,7 @@ onBeforeMount(async () => {
 <template>
   <main>
     <RestaurantInfoComponent :restaurant="currentRestaurant" />
+    <RouterLink :to="{ name: 'AddReview' }" class="main-button" style="margin-bottom: 1em">Review This Restaurant!</RouterLink>
     <ReviewListComponent />
   </main>
 </template>

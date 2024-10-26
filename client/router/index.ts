@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import { useUserStore } from "@/stores/user";
 import { useRestaurantStore } from "../stores/restaurant";
+import AddReview from "../views/AddReview.vue";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
@@ -59,6 +60,12 @@ const router = createRouter({
       path: "/search",
       name: "Search",
       component: SearchView,
+      meta: { requiresAuth: false },
+    },
+    {
+      path: "/review",
+      name: "AddReview",
+      component: AddReview,
       meta: { requiresAuth: false },
     },
     {

@@ -31,6 +31,8 @@ onBeforeMount(async () => {
 <template>
   <div class="restaurant-info-container">
     <div class="restaurant-name">{{ reviewRestaurantName }}</div>
+    <div>{{ reviewRestaurantAddress }}</div>
+    <div>{{ reviewRestaurantURL }}</div>
   </div>
 </template>
 
