@@ -7,7 +7,8 @@ import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 // import SearchPostForm from "./SearchPostForm.vue";
 
-const { isLoggedIn } = storeToRefs(useUserStore());
+const props = defineProps(["profileUser"]);
+const { currentUsername } = storeToRefs(useUserStore());
 const { currentRestaurant } = storeToRefs(useRestaurantStore());
 const { hasRestaurant } = storeToRefs(useRestaurantStore());
 
@@ -22,7 +23,18 @@ let searchReviewer = ref("");
 // TODO: add get reviews for restaurant or reviewer or both: getReviews(reviewer?: string)
 // TODO: get review by restaurant name? differentiate from diff restaurants with same name?
 async function getReviews() {
-  let query: Record<string, string> = hasRestaurant.value ? { restaurant: currentRestaurant.value } : {};
+  let query: Record<string, string>;
+  if (props.profileUser) {
+    let userId;
+    try {
+      userId = (await fetchy(`/api/users/${currentUsername.value}`, "GET"))._id;
+    } catch (_) {
+      return;
+    }
+    query = { user: userId };
+  } else {
+    query = hasRestaurant.value ? { restaurant: currentRestaurant.value } : {};
+  }
   //   console.log("current restaurant:", currentRestaurant.value, "has restaurant?", hasRestaurant.value);
   //   let query: Record<string, string> = {};
   let reviewResults;
@@ -45,10 +57,6 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <!-- <section v-if="isLoggedIn">
-    <button class="main-button">Create Review</button>
-    <CreateReviewForm @refreshPosts="getReviews" />
-  </section> -->
   <section class="reviews" v-if="loaded && reviews.length !== 0">
     <article v-for="review in reviews" :key="review._id">
       <ReviewComponent v-if="editing !== review._id" :review="review" />

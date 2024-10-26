@@ -5,7 +5,6 @@ import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
-import { RouterLink } from "vue-router";
 
 const { currentUsername } = storeToRefs(useUserStore());
 const { updateSession } = useUserStore();
@@ -57,11 +56,11 @@ onBeforeMount(async () => {
   <main>
     <info class="profile-header">
       <div>
-        <h1>{{ currentUsername }}</h1>
-        <RouterLink :to="{ name: 'Settings' }" class="main-button">Edit Profile</RouterLink>
+        <h1 style="margin-bottom: 0.5em; margin-top: 0; padding-top: 0">{{ currentUsername }}</h1>
+        <RouterLink :to="{ name: 'Settings' }" class="main-button" style="margin-bottom: 1em">Edit Profile</RouterLink>
       </div>
       <div class="weightings-container">
-        My Weightings:
+        <span class="weightings-title">My Weightings</span>
         <span>food: {{ foodWeight }}</span>
         <span>service: {{ serviceWeight }}</span>
         <span>ambience: {{ ambienceWeight }}</span>
@@ -69,7 +68,7 @@ onBeforeMount(async () => {
         <span>novelty: {{ noveltyWeight }}</span>
       </div>
     </info>
-    <ReviewListComponent />
+    <ReviewListComponent profileUser="true" />
   </main>
 </template>
 
@@ -84,6 +83,11 @@ onBeforeMount(async () => {
   padding: 1em;
 }
 
+.weightings-title {
+  font-size: 1.2em;
+  margin-bottom: 0.3em;
+}
+
 main {
   display: flex;
   flex-direction: column;
@@ -94,15 +98,19 @@ main {
 .profile-header {
   display: flex;
   flex-direction: row;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-evenly;
-  width: 100%;
+  width: 70%;
   margin-bottom: 1em;
+  padding: 1em;
+  padding-top: 2em;
+  margin-top: 2em;
 }
 
 h1 {
   padding-top: 1em;
-  margin-bottom: 0;
+  padding-bottom: 0.5em;
+  margin-bottom: 1em;
   text-align: center;
   font-size: 2.5em;
 }

@@ -11,7 +11,7 @@ const { updateCurrentRestaurant } = useRestaurantStore();
 
 const props = defineProps(["review"]);
 const emit = defineEmits(["editReview", "refreshReviews"]);
-const { currentUsername } = storeToRefs(useUserStore());
+const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 const restaurantId = ref(props.review.restaurant);
 const reviewRestaurantName = ref("");
 const reviewRestaurantAddress = ref("");
@@ -24,7 +24,7 @@ const ambienceScore = ref(0);
 const priceScore = ref(0);
 const noveltyScore = ref(0);
 
-const weightedAverage = ref(0);
+const weightedAverage = ref("");
 
 const deleteReview = async () => {
   try {
@@ -66,11 +66,12 @@ const getPreferences = async () => {
   } catch (_) {
     return;
   }
-  foodScore.value = Number(preference.food);
-  serviceScore.value = Number(preference.service);
-  ambienceScore.value = Number(preference.ambience);
-  priceScore.value = Number(preference.price);
-  noveltyScore.value = Number(preference.novelty);
+  // assume same weights if not logged in
+  foodScore.value = isLoggedIn ? Number(preference.food) : 5;
+  serviceScore.value = isLoggedIn ? Number(preference.service) : 5;
+  ambienceScore.value = isLoggedIn ? Number(preference.ambience) : 5;
+  priceScore.value = isLoggedIn ? Number(preference.price) : 5;
+  noveltyScore.value = isLoggedIn ? Number(preference.novelty) : 5;
 };
 
 async function updateRestaurant(res: string) {
@@ -93,13 +94,14 @@ async function calculateAverage() {
   }
 
   const weightingSum = currentUserWeightings.food + currentUserWeightings.service + currentUserWeightings.ambience + currentUserWeightings.price + currentUserWeightings.novelty;
-  weightedAverage.value =
+  weightedAverage.value = (
     (1 / weightingSum) *
     (currentUserWeightings.food * foodScore.value +
       currentUserWeightings.service * serviceScore.value +
       currentUserWeightings.ambience * ambienceScore.value +
       currentUserWeightings.price * priceScore.value +
-      currentUserWeightings.novelty * noveltyScore.value);
+      currentUserWeightings.novelty * noveltyScore.value)
+  ).toFixed(2);
 }
 
 onBeforeMount(async () => {
@@ -133,7 +135,8 @@ onBeforeMount(async () => {
     </span>
     <span class="review-content">
       <div class="review-content-container" style="margin-right: 0.5em">
-        <div class="content-subheading">Weighted Average: {{ weightedAverage }}</div>
+        <div v-if="isLoggedIn" class="content-subheading">Weighted Average: {{ weightedAverage }}</div>
+        <div v-else class="content-subheading">Average: {{ weightedAverage }}</div>
         <div>food: {{ foodScore }}</div>
         <div>service: {{ serviceScore }}</div>
         <div>ambience: {{ ambienceScore }}</div>

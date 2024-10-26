@@ -7,11 +7,11 @@ import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 
 const props = defineProps(["restaurant"]);
-const { currentUsername, userWeighting } = storeToRefs(useUserStore());
+const { currentUsername, userWeighting, isLoggedIn } = storeToRefs(useUserStore());
 const { updateCurrentRestaurant } = useRestaurantStore();
 let reviews = ref<Array<Record<string, string>>>([]);
 const loaded = ref(false);
-const restaurantAvg = ref(0);
+const restaurantAvg = ref("");
 
 async function updateRestaurant(res: string) {
   await updateCurrentRestaurant(res);
@@ -30,7 +30,7 @@ async function getReviews() {
 
 async function getAverage() {
   try {
-    restaurantAvg.value = await weightedAverage(userWeighting.value, reviews.value);
+    restaurantAvg.value = (await weightedAverage(userWeighting.value, reviews.value)).toFixed(2);
   } catch (_) {
     return;
   }
@@ -54,7 +54,8 @@ onBeforeMount(async () => {
     </div>
     <div class="weighted-avg-container">
       <span v-if="!Number.isNaN(restaurantAvg)">
-        <div>Weighted Average</div>
+        <div v-if="isLoggedIn">Weighted Average</div>
+        <div v-else>Average</div>
         <div class="weighted-avg-number">{{ restaurantAvg }}</div>
       </span>
       <span v-else>No Reviews Yet</span>

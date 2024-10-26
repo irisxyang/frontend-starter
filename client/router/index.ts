@@ -11,6 +11,7 @@ import ProfileView from "../views/ProfileView.vue";
 import RestaurantView from "../views/RestaurantView.vue";
 import SearchView from "../views/SearchView.vue";
 import SettingView from "../views/SettingView.vue";
+import UserRegistrationView from "../views/UserRegistrationView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -66,6 +67,12 @@ const router = createRouter({
       path: "/review",
       name: "AddReview",
       component: AddReview,
+      meta: { requiresAuth: false },
+    },
+    {
+      path: "/register",
+      name: "Register",
+      component: UserRegistrationView,
       meta: { requiresAuth: false },
     },
     {
