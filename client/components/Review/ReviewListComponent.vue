@@ -31,7 +31,7 @@ async function getReviews() {
     } catch (_) {
       return;
     }
-    query = { user: userId };
+    query = { reviewer: userId };
   } else {
     query = hasRestaurant.value ? { restaurant: currentRestaurant.value } : {};
   }
@@ -62,7 +62,7 @@ onBeforeMount(async () => {
       <ReviewComponent v-if="editing !== review._id" :review="review" />
     </article>
   </section>
-  <p v-else-if="loaded">No reviews found</p>
+  <p v-else-if="loaded" style="margin: 4em; margin-bottom: 8em">No reviews found</p>
   <p v-else>Loading...</p>
 </template>
 

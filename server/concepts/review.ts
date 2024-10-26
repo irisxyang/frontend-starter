@@ -33,9 +33,9 @@ export default class ReviewingConcept {
     // page?
     let reviews;
     if (user && restaurant) {
-      reviews = await this.reviews.readOne({ user, restaurant });
+      reviews = await this.reviews.readOne({ reviewer: user, restaurant });
     } else if (user) {
-      reviews = await this.reviews.readMany({ user });
+      reviews = await this.reviews.readMany({ reviewer: user });
     } else if (restaurant) {
       reviews = await this.reviews.readMany({ restaurant });
     } else {
@@ -44,6 +44,8 @@ export default class ReviewingConcept {
 
     return reviews;
   }
+
+  // async getReviewsByUser()
 
   async getReviewById(_id: ObjectId) {
     return await this.reviews.readOne({ _id });
