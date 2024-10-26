@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import router from "@/router";
 import { onBeforeMount, ref } from "vue";
 import { RouterLink } from "vue-router";
 import { fetchy } from "../../utils/fetchy";
@@ -24,6 +25,7 @@ const createReview = async (restaurant: string, comment: string, food: string, a
   }
   emit("refreshReviews");
   emptyForm();
+  void router.push({ name: "Home" });
 };
 
 const emptyForm = () => {

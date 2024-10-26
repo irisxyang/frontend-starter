@@ -47,14 +47,20 @@ async function register() {
 <template>
   <main>
     <h1>Register User</h1>
-    <form class="pure-form pure-form-aligned" @submit.prevent="register">
-      <div class="pure-control-group">
-        <label for="aligned-name">Username</label>
+    <form class="pure-form pure-form-aligned" style="display: flex; flex-direction: column; align-items: center; justify-content: center" @submit.prevent="register">
+      <div style="margin: 2em; margin-bottom: 1em">
+        <label for="aligned-name" style="margin-right: 1em">Username</label>
         <input v-model.trim="username" type="text" id="aligned-name" placeholder="Username" required />
       </div>
-      <div class="pure-control-group" style="margin-bottom: 2em">
-        <label for="aligned-password">Password</label>
+      <div style="margin-bottom: 2em">
+        <label for="aligned-password" style="margin-right: 1em">Password</label>
         <input type="password" v-model.trim="password" id="aligned-password" placeholder="Password" required />
+      </div>
+      <div class="description-text">
+        Select your weighting below. These numbers will determine what weights to use when averaging any review ratings based on the following characteristics.
+        <br />
+        <br />
+        For example, if you really care about food, but not as much about service, you can weight food at a 5 and service at a 1.
       </div>
       <div class="button-container">
         <span class="row">
@@ -96,8 +102,8 @@ async function register() {
           </div>
         </span>
       </div>
-      <div class="pure-controls">
-        <button type="submit" class="pure-button pure-button-primary">Register</button>
+      <div style="margin: 2em">
+        <button type="submit" class="main-button">Register</button>
       </div>
     </form>
   </main>
@@ -109,6 +115,16 @@ main {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.description-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40%;
+
+  margin-bottom: 2em;
+  margin-top: 0.5em;
 }
 
 .button-title {

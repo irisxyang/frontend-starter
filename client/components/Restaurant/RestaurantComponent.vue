@@ -48,7 +48,7 @@ onBeforeMount(async () => {
 <template>
   <div class="restaurant-container">
     <div>
-      <RouterLink :to="{ name: 'Restaurant' }" @click="updateCurrentRestaurant(props.restaurant._id)" class="restaurant-name">{{ props.restaurant.name }}</RouterLink>
+      <RouterLink :to="{ name: 'Restaurant' }" @click="updateRestaurant(props.restaurant._id)" class="restaurant-name">{{ props.restaurant.name }}</RouterLink>
       <div>{{ props.restaurant.address }}</div>
       <div>{{ props.restaurant.url }}</div>
     </div>

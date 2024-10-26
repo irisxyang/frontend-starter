@@ -19,7 +19,7 @@ export async function weightedAverage(weighting: Record<string, string>, reviews
     try {
       preference = await fetchy("/api/review/preference", "GET", { query });
     } catch (_) {
-      preference = { food: "0", service: "0", ambience: "0", price: "0", novelty: "0" };
+      preference = { food: "5", service: "5", ambience: "5", price: "5", novelty: "5" };
     }
 
     const reviewFoodScore = Number(preference.food);

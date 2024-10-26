@@ -42,6 +42,7 @@ const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
     <RouterLink :to="{ name: 'Search' }">
       <button class="main-button find-restaurant-button">Find a Restaurant</button>
     </RouterLink>
+    <!-- <EditPostForm post="6712daf584eb6c16347864fb" /> -->
     <ReviewListComponent />
   </main>
 </template>

@@ -15,21 +15,18 @@ async function login() {
 </script>
 
 <template>
-  <form class="pure-form pure-form-aligned" @submit.prevent="login">
-    <h3>Login</h3>
-    <fieldset>
-      <div class="pure-control-group">
-        <label for="aligned-name">Username</label>
-        <input v-model.trim="username" type="text" id="aligned-name" placeholder="Username" required />
-      </div>
-      <div class="pure-control-group">
-        <label for="aligned-password">Password</label>
-        <input type="password" v-model.trim="password" id="aligned-password" placeholder="Password" required />
-      </div>
-      <div class="pure-controls">
-        <button type="submit" class="pure-button pure-button-primary">Submit</button>
-      </div>
-    </fieldset>
+  <form class="pure-form pure-form-aligned" style="display: flex; flex-direction: column; align-items: center; justify-content: center" @submit.prevent="login">
+    <div style="margin: 2em; margin-bottom: 1em">
+      <label for="aligned-name" style="margin-right: 1em">Username</label>
+      <input v-model.trim="username" type="text" id="aligned-name" placeholder="Username" required />
+    </div>
+    <div style="margin-bottom: 2em">
+      <label for="aligned-password" style="margin-right: 1em">Password</label>
+      <input type="password" v-model.trim="password" id="aligned-password" placeholder="Password" required />
+    </div>
+    <div style="margin: 2em; margin-bottom: 8em">
+      <button type="submit" class="main-button">Submit</button>
+    </div>
   </form>
 </template>
 

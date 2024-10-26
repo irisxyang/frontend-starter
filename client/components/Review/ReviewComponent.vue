@@ -1,11 +1,23 @@
 <script setup lang="ts">
 import { useRestaurantStore } from "@/stores/restaurant";
 import { useUserStore } from "@/stores/user";
+import { useViewingStore } from "@/stores/viewing";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 import { RouterLink } from "vue-router";
 import { fetchy } from "../../utils/fetchy";
+
+const { updateCurrentlyViewingReview } = useViewingStore();
+
+async function updateCurrentReview(review: Record<string, string>) {
+  await updateCurrentlyViewingReview(review);
+}
+
+async function clickEditReview(review: Record<string, string>) {
+  await updateCurrentReview(review);
+  emit("editReview", review._id);
+}
 
 const { updateCurrentRestaurant } = useRestaurantStore();
 
@@ -90,17 +102,18 @@ async function calculateAverage() {
   try {
     currentUserWeightings = await fetchy(`/api/user/weightings`, "GET");
   } catch (_) {
-    return;
+    currentUserWeightings = { food: "5", service: "5", ambience: "5", price: "5", novelty: "5" };
   }
 
-  const weightingSum = currentUserWeightings.food + currentUserWeightings.service + currentUserWeightings.ambience + currentUserWeightings.price + currentUserWeightings.novelty;
+  const weightingSum =
+    Number(currentUserWeightings.food) + Number(currentUserWeightings.service) + Number(currentUserWeightings.ambience) + Number(currentUserWeightings.price) + Number(currentUserWeightings.novelty);
   weightedAverage.value = (
     (1 / weightingSum) *
-    (currentUserWeightings.food * foodScore.value +
-      currentUserWeightings.service * serviceScore.value +
-      currentUserWeightings.ambience * ambienceScore.value +
-      currentUserWeightings.price * priceScore.value +
-      currentUserWeightings.novelty * noveltyScore.value)
+    (Number(currentUserWeightings.food) * foodScore.value +
+      Number(currentUserWeightings.service) * serviceScore.value +
+      Number(currentUserWeightings.ambience) * ambienceScore.value +
+      Number(currentUserWeightings.price) * priceScore.value +
+      Number(currentUserWeightings.novelty) * noveltyScore.value)
   ).toFixed(2);
 }
 
@@ -149,7 +162,7 @@ onBeforeMount(async () => {
       </div>
     </span>
     <menu class="review-buttons" v-if="reviewUsername == currentUsername">
-      <li><button class="main-button" @click="emit('editReview', props.review._id)">Edit</button></li>
+      <li><RouterLink :to="{ name: 'EditReview' }" class="main-button" @click="clickEditReview(props.review)">Edit</RouterLink></li>
       <li><button class="main-button" @click="deleteReview">Delete</button></li>
     </menu>
   </div>

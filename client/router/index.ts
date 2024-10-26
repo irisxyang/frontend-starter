@@ -3,7 +3,9 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import { useUserStore } from "@/stores/user";
 import { useRestaurantStore } from "../stores/restaurant";
+import { useViewingStore } from "../stores/viewing";
 import AddReview from "../views/AddReview.vue";
+import EditReview from "../views/EditReview.vue";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
@@ -67,7 +69,19 @@ const router = createRouter({
       path: "/review",
       name: "AddReview",
       component: AddReview,
-      meta: { requiresAuth: false },
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/review/edit",
+      name: "EditReview",
+      component: EditReview,
+      meta: { requiresAuth: true },
+      beforeEnter: (to, from) => {
+        const { hasReview } = storeToRefs(useViewingStore());
+        if (hasReview.value) {
+          return;
+        }
+      },
     },
     {
       path: "/register",

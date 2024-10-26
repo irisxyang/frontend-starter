@@ -1,18 +1,37 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { fetchy } from "../utils/fetchy";
 
 export const useViewingStore = defineStore(
   "viewing",
   () => {
     const currentlyViewingUser = ref("");
+    // const currentlyViewingReview = ref({ comment: "", food: "0", service: "0", ambience: "0", price: "0", novelty: "0" });
+    const currentlyViewingReview = ref<Record<string, string>>();
+    const currentlyViewingReviewPreference = ref<Record<string, string>>();
+    const hasReview = ref(false);
 
     const updateCurrentlyViewing = async (user: string) => {
       currentlyViewingUser.value = user;
     };
-    const resetStore = () => {
-      currentlyViewingUser.value = "";
+    const updateCurrentlyViewingReview = async (review: Record<string, string>) => {
+      currentlyViewingReview.value = review;
+      let preferences;
+      const query = { review: review._id };
+      try {
+        preferences = await fetchy("/api/review/preference", "GET", { query });
+      } catch (_) {
+        preferences = { food: "0", service: "0", ambience: "0", price: "0", novelty: "0" };
+      }
+      currentlyViewingReviewPreference.value = preferences;
+      hasReview.value = true;
     };
-    return { currentlyViewingUser, updateCurrentlyViewing, resetStore };
+
+    const resetReviewStore = () => {
+      currentlyViewingUser.value = "";
+      hasReview.value = false;
+    };
+    return { currentlyViewingUser, currentlyViewingReview, currentlyViewingReviewPreference, hasReview, updateCurrentlyViewingReview, resetReviewStore };
   },
   { persist: true },
 );

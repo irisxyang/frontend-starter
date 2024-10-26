@@ -59,7 +59,7 @@ onBeforeMount(async () => {
 <template>
   <section class="reviews" v-if="loaded && reviews.length !== 0">
     <article v-for="review in reviews" :key="review._id">
-      <ReviewComponent v-if="editing !== review._id" :review="review" />
+      <ReviewComponent @refreshReviews="getReviews" v-if="editing !== review._id" :review="review" />
     </article>
   </section>
   <p v-else-if="loaded" style="margin: 4em; margin-bottom: 8em">No reviews found</p>

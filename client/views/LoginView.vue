@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import LoginForm from "@/components/Login/LoginForm.vue";
-import RegisterForm from "@/components/Login/RegisterForm.vue";
 </script>
 
 <template>
   <main class="column">
-    <h1>Please login or register!</h1>
+    <h1 style="margin-top: 2em">Login</h1>
     <LoginForm />
-    <RegisterForm />
   </main>
 </template>
+
+<style scoped>
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+</style>

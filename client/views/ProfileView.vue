@@ -2,6 +2,7 @@
 import ReviewListComponent from "@/components/Review/ReviewListComponent.vue";
 import { useRestaurantStore } from "@/stores/restaurant";
 import { useUserStore } from "@/stores/user";
+import { useViewingStore } from "@/stores/viewing";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
@@ -16,6 +17,8 @@ const priceWeight = ref(0);
 const noveltyWeight = ref(0);
 
 const { resetStore } = useRestaurantStore();
+
+const { resetReviewStore } = useViewingStore();
 
 // const profileIsCurrentUser = ref(false);
 
@@ -46,9 +49,15 @@ async function resetRestaurant() {
   await resetStore();
 }
 
+// resets store to hold no restaurant
+async function resetReview() {
+  await resetReviewStore();
+}
+
 onBeforeMount(async () => {
   await loadUserInfo();
   await resetRestaurant();
+  await resetReview();
 });
 </script>
 
