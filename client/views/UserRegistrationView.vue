@@ -31,7 +31,7 @@ function setNoveltyScore(num: number) {
 
 async function createUserWeighting() {
   const query = { food: String(food), service: String(service), ambience: String(ambience), price: String(price), novelty: String(novelty) };
-  await fetchy("api/user/weightings", "GET", { query });
+  await fetchy("api/user/weightings", "POST", { query });
 }
 
 async function register() {
